@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CleanWheel - Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .portal-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f4f6f5 0%, #eaf6ff 100%);
+            padding: 20px;
+        }
+
+        .portal-card {
+            background: white;
+            padding: 50px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .portal-card h1 {
+            font-size: 2.2rem;
+            color: #111;
+            margin-bottom: 10px;
+        }
+
+        .portal-card p {
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* Styling Pilihan Role */
+        .role-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .role-item {
+            flex: 1;
+            min-width: 250px;
+            background: #fdfdfd;
+            border: 2px solid #eaeaea;
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+        }
+
+        .role-item:hover {
+            border-color: #0088ff; /* Warna Electric */
+            background: #f0f8ff;
+            transform: translateY(-5px);
+        }
+
+        /* Efek terpilh (akan dikasih class via JS) */
+        .role-item.selected {
+            border-color: #0088ff;
+            background: #eaf6ff;
+            box-shadow: 0 10px 20px rgba(0,136,255,0.1);
+        }
+
+        .role-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .role-item h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 5px;
+        }
+
+        .role-item p {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 0;
+        }
+
+        /* Checkmark saat dipilih */
+        .selected-check {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #0088ff;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .role-item.selected .selected-check {
+            display: block;
+        }
+
+        /* Form Login yang muncul */
+        .login-form-area {
+            display: none; /* Awalnya sembunyi */
+            margin-top: 30px;
+            text-align: left;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .login-form-area h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        #loginForm input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+    </style>
+</head>
+<body>
+
+    <main class="portal-container">
+        <div class="portal-card">
+            <span class="logo-text" style="font-size:1.5rem; color:#0088ff; margin-bottom:10px; display:block;">CleanWheel</span>
+            <h1>Selamat Datang</h1>
+            <p>Silakan pilih siapa Anda untuk melanjutkan ke sistem kami.</p>
+            
+            <div class="role-options">
+                <div class="role-item" id="customerRole" onclick="selectRole('customer')">
+                    <span class="selected-check">✓</span>
+                    <span class="role-icon">👤</span>
+                    <h3>Pelanggan</h3>
+                    <p>Saya ingin melihat layanan dan melakukan booking cuci mobil.</p>
+                </div>
+
+                <div class="role-item" id="adminRole" onclick="selectRole('admin')">
+                    <span class="selected-check">✓</span>
+                    <span class="role-icon">🛠️</span>
+                    <h3>Admin / Kasir</h3>
+                    <p>Saya ingin mengelola jadwal pesanan dan status cuci mobil.</p>
+                </div>
+            </div>
+
+            <div class="login-form-area" id="loginFormArea">
+                <h4 id="loginFormTitle">Masuk sebagai...</h4>
+                <form id="loginForm">
+                    <input type="text" id="username" placeholder="Username" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <button type="submit" class="btn-select">Masuk ke Dashboard</button>
+                    <p id="errorMsg" style="color:red; font-size:0.8rem; margin-top:10px; display:none;">Username atau password salah (Coba: admin/admin).</p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let selectedRole = '';
+
+        function selectRole(role) {
+            // Reset pilihan
+            document.querySelectorAll('.role-item').forEach(item => item.classList.remove('selected'));
+            document.getElementById('loginFormArea').style.display = 'block';
+            
+            // Atur pilihan baru
+            if(role === 'customer') {
+                document.getElementById('customerRole').classList.add('selected');
+                document.getElementById('loginFormTitle').innerText = "Masuk sebagai Pelanggan";
+                selectedRole = 'customer';
+                // Pelanggan bisa langsung masuk (dianggap tamu), jadi form login bisa di-skip atau diisi 'guest'
+                document.getElementById('username').value = "PelangganTamu";
+                document.getElementById('password').value = "tamu123";
+            } else {
+                document.getElementById('adminRole').classList.add('selected');
+                document.getElementById('loginFormTitle').innerText = "Masuk sebagai Admin";
+                selectedRole = 'admin';
+                document.getElementById('username').value = ""; // Kosongkan untuk input admin
+                document.getElementById('password').value = "";
+            }
+        }
+
+        // Handle Logika Login
+        document.getElementById('loginForm').onsubmit = (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('errorMsg');
+
+            if(selectedRole === 'customer') {
+                // Dianggap tamu, langsung masuk ke Home Pelanggan
+                window.location.href = 'index.html'; 
+            } else if(selectedRole === 'admin') {
+                // Cek User/Pass Admin (Dummy dulu, idealnya pakai DB)
+                if(user === 'admin' && pass === 'admin') {
+                    error.style.display = 'none';
+                    // Kita akan buat halaman baru: admin_dashboard.html
+                    window.location.href = 'admin_dashboard.html'; 
+                } else {
+                    error.style.display = 'block';
+                }
+            }
+        };
+    </script>
+</body>
+</html>
+
+<hr style="margin: 50px 0; border: 0; border-top: 1px solid #eee;">
+<p style="color: #666; margin-bottom: 20px;">Sesuaikan harga paket cuci mobil yang tampil di halaman pelanggan.</p>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;" id="servicesEditor">
+    </div>

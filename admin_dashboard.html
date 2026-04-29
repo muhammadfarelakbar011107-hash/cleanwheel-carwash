@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - CleanWheel</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #f4f6f5; font-family: 'Inter', sans-serif; }
+        .admin-nav { background: #fff; padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .container { padding: 40px 50px; }
+        .stats-grid { display: flex; gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 16px; flex: 1; border: 1px solid #eee; }
+        .stat-card h3 { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
+        .stat-card p { font-size: 1.5rem; font-weight: 700; color: #0088ff; }
+
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        th, td { padding: 18px; text-align: left; border-bottom: 1px solid #f4f4f4; }
+        th { background: #f9fbfd; color: #666; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Status Badge Colors */
+        .status { padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; }
+        .status-menunggu { background: #fff7ed; color: #c2410c; }
+        .status-dicuci { background: #eff6ff; color: #1d4ed8; }
+        .status-selesai { background: #f0fdf4; color: #15803d; }
+
+        .action-btn { background: #0088ff; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: 0.3s; }
+        .action-btn:hover { background: #0055ff; }
+        .btn-logout { color: #ff4444; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <nav class="admin-nav">
+        <div class="logo-text">CleanWheel <span style="font-weight: 400; color: #888;">| Admin</span></div>
+        <a href="portal.html" class="btn-logout">Logout</a>
+    </nav>
+
+    <div class="container">
+        <h1>Dashboard Antrean 🚗</h1>
+        <p style="color: #666; margin-bottom: 30px;">Contact Person: +62 857 2007 6162
+            
+        </p> 
+
+        <div class="stats-grid">
+            <div class="stat-card"><h3>Total Antrean</h3><p id="countTotal">0</p></div>
+            <div class="stat-card"><h3>Sedang Dicuci</h3><p id="countProses">0</p></div>
+            <div class="stat-card"><h3>Selesai Hari Ini</h3><p id="countSelesai">0</p></div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pelanggan</th>
+                    <th>Mobil</th>
+                    <th>Paket</th>
+                    <th>Waktu</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="adminTableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        function loadAdminData() {
+            const bookings = JSON.parse(localStorage.getItem('allBookings')) || [];
+            const tableBody = document.getElementById('adminTableBody');
+            
+            // Hitung Statistik
+            document.getElementById('countTotal').innerText = bookings.length;
+            document.getElementById('countProses').innerText = bookings.filter(b => b.status === 'Dicuci').length;
+            document.getElementById('countSelesai').innerText = bookings.filter(b => b.status === 'Selesai').length;
+
+            if (bookings.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='6' style='text-align:center; padding: 50px; color: #999;'>Belum ada pesanan masuk.</td></tr>";
+                return;
+            }
+
+            tableBody.innerHTML = bookings.map((b, index) => `
+                <tr>
+                    <td><strong>${b.nama}</strong></td>
+                    <td>${b.mobil}</td>
+                    <td>${b.paket}</td>
+                    <td>${b.jam}</td>
+                    <td><span class="status status-${(b.status || 'Menunggu').toLowerCase()}">${b.status || 'Menunggu'}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="updateStatus(${index})">Next Step</button>
+                    </td>
+                </tr>
+            `).reverse().join(''); // Reverse biar yang terbaru di atas
+        }
+
+        function updateStatus(index) {
+            let bookings = JSON.parse(localStorage.getItem('allBookings')) || [];
+            let currentStatus = bookings[index].status || 'Menunggu';
+
+            // Logika Perubahan Status (Sesuai Diagram Use Case kamu)
+            if (currentStatus === 'Menunggu') {
+                bookings[index].status = 'Dicuci';
+            } else if (currentStatus === 'Dicuci') {
+                bookings[index].status = 'Selesai';
+            } else {
+                if(confirm("Hapus pesanan yang sudah selesai ini?")) {
+                    bookings.splice(index, 1);
+                }
+            }
+
+            localStorage.setItem('allBookings', JSON.stringify(bookings));
+            loadAdminData(); // Refresh tabel
+            
+        }
+
+        // Jalankan saat halaman dibuka
+        loadAdminData();
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - CleanWheel</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Gaya dasar agar rapi */
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #0088ff; color: white; }
+        .status { padding: 5px 10px; border-radius: 5px; font-size: 0.8em; font-weight: bold; }
+        .status-menunggu { background: #ffeaa7; color: #d63031; }
+        .status-dicuci { background: #81ecec; color: #0984e3; }
+        .status-selesai { background: #55efc4; color: #00b894; }
+        .action-btn { cursor: pointer; background: #0088ff; color: white; border: none; padding: 5px 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Dashboard Antrean CleanWheel 🚗</h2>
+    <p>Data pesanan yang masuk akan otomatis tampil di bawah ini.</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Pelanggan</th>
+                <th>Mobil</th>
+                <th>Paket</th>
+                <th>Waktu</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="adminTableBody">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    function loadDataAdmin() {
+        // 1. Ambil data dari LocalStorage dengan kunci 'allBookings'
+        // PENTING: Nama kunci harus sama persis dengan yang di booking.html
+        const listPesanan = JSON.parse(localStorage.getItem('allBookings')) || [];
+        const tableBody = document.getElementById('adminTableBody');
+        
+        // Bersihkan tabel
+        tableBody.innerHTML = "";
+
+        if (listPesanan.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='6' style='text-align:center; padding:20px;'>Belum ada pesanan masuk. Coba lakukan booking dulu di halaman pelanggan.</td></tr>";
+            return;
+        }
+
+        // 2. Masukkan data satu per satu
+        listPesanan.forEach((item, index) => {
+            const row = `
+                <tr>
+                    <td><strong>${item.nama}</strong></td>
+                    <td>${item.mobil}</td>
+                    <td>${item.paket}</td>
+                    <td>${item.jam}</td>
+                    <td><span class="status status-${item.status.toLowerCase()}">${item.status}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="updateStatus(${index})">Update Status</button>
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    function updateStatus(index) {
+        let list = JSON.parse(localStorage.getItem('allBookings'));
+        
+        // Logika ganti status: Menunggu -> Dicuci -> Selesai -> Hapus
+        if (list[index].status === 'Menunggu') {
+            list[index].status = 'Dicuci';
+        } else if (list[index].status === 'Dicuci') {
+            list[index].status = 'Selesai';
+        } else {
+            if(confirm("Hapus data yang sudah selesai ini?")) {
+                list.splice(index, 1);
+            }
+        }
+
+        localStorage.setItem('allBookings', JSON.stringify(list));
+        loadDataAdmin(); // Refresh tabel setelah update
+    }
+
+    // Jalankan fungsi saat halaman terbuka
+    loadDataAdmin();
+
+    // Opsional: Cek data setiap 5 detik (Auto Refresh)
+    setInterval(loadDataAdmin, 5000);
+</script>
+
+</body>
+</html>
+        <tr>
+            <td><strong strong></td>
+            <td>
+                <small style="color: #666; font-weight: bold;"
+            span class="status status-${item.status.toLowerCase()}"span></td>
+            <td>
+                <button class="action-btn" onclick="updateStatus"button>
+                <div class="bubble" style="left:10px; width:15px; height:15px; animation-delay:0s;"></div>
+                <div class="bubble" style="left:30px; width:10px; height:10px; animation-delay:0.5s;"></div>
+                <div class="bubble" style="left:50px; width:20px; height:20px; animation-delay:0.2s;"></div>
+<script>
+                function loadDataAdmin() {
+    const listPesanan = JSON.parse(localStorage.getItem('allBookings')) || [];
+    const tableBody = document.getElementById('adminTableBody'); // Pastikan ID ini sesuai
+    
+    tableBody.innerHTML = ""; 
+
+    listPesanan.forEach((item, index) => {
+        // Logika warna: Hijau untuk Sudah Bayar, Merah untuk Belum Bayar
+        const isLunas = item.pembayaran === "Sudah Bayar";
+        const badgeColor = isLunas ? "#2ecc71" : "#e74c3c";
+        const labelBayar = isLunas ? "LUNAS" : "BELUM BAYAR";
+
+        const row = `
+            <tr>
+                <td><strong>${item.nama}</strong></td>
+                <td>
+                    ${item.mobil} <br>
+                    <small style="color: #666; font-weight: bold;">[ ${item.plat || 'Tanpa Plat'} ]</small> 
+                </td>
+                <td>
+                    ${item.paket} <br>
+                    <span style="background: ${badgeColor}; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; display: inline-block; margin-top: 5px;">
+                        ${labelBayar} (${item.metode || 'Cash'})
+                    </span>
+                </td>
+                <td>${item.jam}</td>
+                <td><span class="status status-${item.status.toLowerCase()}">${item.status}</span></td>
+                <td>
+                    <button class="action-btn" onclick="updateStatus(${index})">Update Status</button>
+                </td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+}
+// Ganti bagian row di dalam loop forEach admin_dashboard.html
+const row = `
+    <tr>
+        <td><strong>${item.nama}</strong></td>
+        <td>${item.mobil}</td>
+        <td>${item.paket}</td>
+        <td>${item.jam}</td>
+        <td><span class="status status-${item.status.toLowerCase()}">${item.status}</span></td>
+        <td>
+            <button class="action-btn" onclick="updateStatus(${index})">Update Status</button>
+        </td>
+        <td style="text-align:center; font-weight:bold;">
+            ${item.plat ? item.plat : '-'}
+        </td>
+        <td style="text-align:center;">
+            <span style="background: ${item.pembayaran === 'Sudah Bayar' ? '#2ecc71' : '#e74c3c'}; color: white; padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: bold;">
+                ${item.pembayaran ? item.pembayaran : 'Belum Bayar'}
+            </span>
+        </td>
+    </tr>
+`;
+

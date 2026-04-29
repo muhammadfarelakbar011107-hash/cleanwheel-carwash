@@ -1,0 +1,124 @@
+<script>
+    // 1. Minta Izin Notifikasi saat halaman dibuka
+    function mintaIzin() {
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+    }
+    mintaIzin();
+
+    function kirimNotif(nama, status) {
+        if (Notification.permission === 'granted') {
+            new Notification("CleanWheel Update! ✨", {
+                body: `Halo ${nama}, mobil kamu sudah ${status}!`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png'
+            });
+        }
+    }
+
+    let statusLama = "";
+
+    function pantauStatus() {
+        const cari = document.getElementById('namaCari').value.toLowerCase();
+        if (cari === "") return;
+
+        const data = JSON.parse(localStorage.getItem('allBookings')) || [];
+        const user = data.find(u => u.nama.toLowerCase().includes(cari));
+
+        if (user) {
+            // Jika status berubah dari sebelumnya, kirim notifikasi
+            if (statusLama !== "" && statusLama !== user.status) {
+                kirimNotif(user.nama, user.status);
+            }
+            statusLama = user.status;
+            
+            // Update tampilan di layar
+            updateTampilan(user);
+        }
+    }
+
+    function updateTampilan(user) {
+        const box = document.getElementById('boxHasil');
+        box.style.display = 'block';
+        document.getElementById('txtNama').innerText = user.nama;
+        document.getElementById('txtMobil').innerText = user.mobil;
+        
+        const s = user.status || 'Menunggu';
+        const badge = document.getElementById('txtStatus');
+        badge.innerText = s;
+        badge.className = `status-badge status-${s.toLowerCase()}`;
+        
+        const pesan = document.getElementById('txtPesan');
+        if(s === 'Selesai') pesan.innerText = "Gacor! Mobil sudah kinclong, silakan diambil.";
+        else pesan.innerText = "Mobil sedang diproses...";
+    }
+
+    // Cek perubahan data setiap 3 detik secara otomatis
+    setInterval(() => {
+        pantauStatus();
+        muatData(); // Fungsi tabel yang lama
+    }, 3000);
+
+    // Fungsi muatData tetap sama seperti sebelumnya...
+    function muatData() {
+        const data = JSON.parse(localStorage.getItem('allBookings')) || [];
+        const listPublik = document.getElementById('listPublik');
+        listPublik.innerHTML = "";
+        data.forEach(item => {
+            listPublik.innerHTML += `<tr><td>${item.nama}</td><td>${item.mobil}</td><td><b style="color:#0088ff">${item.status || 'Menunggu'}</b></td></tr>`;
+        });
+    }
+    muatData();
+</script>
+<script>
+    const notifBtn = document.getElementById('enableNotif');
+    const notifStatus = document.getElementById('notifStatus');
+    let statusTerakhir = "";
+
+    // 1. Fungsi meminta izin notifikasi browser
+    notifBtn.onclick = () => {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                notifBtn.style.display = "none";
+                notifStatus.innerText = "✅ Notifikasi Aktif! Kamu boleh tutup halaman ini atau tunggu di sini.";
+                alert("Izin diberikan! Kami akan beri tahu jika mobil sudah selesai.");
+            }
+        });
+    };
+
+    // 2. Fungsi mengirim notifikasi ke layar
+    function kirimNotifikasi(namaPelanggan) {
+        if (Notification.permission === "granted") {
+            new Notification("Mobil Selesai Dicucil! ✨", {
+                body: `Halo ${namaPelanggan}, mobil kamu sudah kinclong dan siap diambil!`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png' // Icon mobil bersih
+            });
+        }
+    }
+
+    // 3. Sistem Pengecekan Otomatis (Cek setiap 3 detik)
+    setInterval(() => {
+        const cariNama = document.getElementById('inputNama') ? document.getElementById('inputNama').value.toLowerCase() : "";
+        if (cariNama === "") return; // Jangan cek kalau input nama kosong
+
+        const listBooking = JSON.parse(localStorage.getItem('allBookings')) || [];
+        const pesananSaya = listBooking.find(u => u.nama.toLowerCase().includes(cariNama));
+
+        if (pesananSaya) {
+            // Jika status baru saja berubah menjadi 'Selesai'
+            if (pesananSaya.status === "Selesai" && statusTerakhir !== "Selesai") {
+                kirimNotifikasi(pesananSaya.nama);
+                // Kita juga bisa tambahkan suara alert
+                let audio = new Audio('https://www.soundjay.com/buttons/sounds/beep-01a.mp3');
+                audio.play();
+            }
+            statusTerakhir = pesananSaya.status;
+        }
+    }, 3000); // Interval 3 detik
+</script>
+<div class="notification-setup" style="text-align: center; margin: 20px 0;">
+    <button id="enableNotif" class="btn-select" style="background: #ffcc00; color: #000; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold;">
+        🔔 Aktifkan Notifikasi Selesai
+    </button>
+    <p id="notifStatus" style="font-size: 0.8rem; margin-top: 5px; color: #666;">Klik agar tahu kapan mobilmu kinclong!</p>
+</div>

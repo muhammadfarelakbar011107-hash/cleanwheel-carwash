@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CleanWheel - Car Wash Management</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+  <body>
+    <header>
+      <div class="logo-container">
+        <div class="logo-icon">
+          <img src="images/logo.png.jpeg"
+            width="50"
+            height="50"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            <path
+              d="M12 21.5C17.2467 21.5 21.5 17.2467 21.5 12C21.5 8.5 12 2.5 12 2.5C12 2.5 2.5 8.5 2.5 12C2.5 17.2467 6.75329 21.5 12 21.5Z"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <span class="logo-text">Electric Car  Wash
+        </span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Booking</a></li>
+          <li><a href="#">Our Team</a></li>
+        </ul>
+      </nav>
+      <button class="btn-primary">Get Started</button>
+    </header>
+
+    <main>
+      <section class="services-section">  
+        <div class="section-header">
+          <h1>Our Premium Services</h1>
+          <p>
+            Choose the perfect care for your vehicle. From basic washes to full
+            detailing, we use the best products for your car.
+          </p>
+        </div>
+
+        <div class="pricing-cards">
+          <div class="card">
+            <div class="card-icon">💧</div>
+            <h3>Aqua Shine Detail</h3>
+            <div class="price">Rp 100.000</div>
+            <p class="desc">Quick exterior wash and tire shine.</p>
+            <ul class="features">
+              <li><span class="check-icon">✓</span> Pembersihan Eksterior Menyeluruh</li>
+              <li><span class="check-icon">✓</span> kilap Ban Elegan</li>
+              <li><span class="check-icon">✓</span> Pengeringan Hand-Dry Premium</li>
+            </ul>
+            <button class="btn-select">Select Service</button>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">🚗</div>
+            <h3>Supreme Executive Detail</h3>
+            <div class="price">Rp 175.000</div>
+            <p class="desc">Complete exterior and interior cleaning.</p>
+            <ul class="features">
+              <li><span class="check-icon">✓</span> Pembersihan Eksterior Detail</li>
+              <li><span class="check-icon">✓</span> Interior Vacum Deep Clean</li>
+              <li><span class="check-icon">✓</span> Perawatan Dashboard & Trim</li>
+              <li><span class="check-icon">✓</span> Kilap Ban Presisi</li>
+            </ul>
+            <button class="btn-select">Select Service</button>
+          </div>
+
+          <div class="card">
+            <div class="card-icon">✨</div>
+            <h3>Titanium Luxury Detail</h3>
+            <div class="price">Rp 250.000.</div>
+            <p class="desc">Full detailing with wax and engine cleaning.</p>
+            <ul class="features">
+              <li><span class="check-icon">✓</span> Seluruh Layanan Prime Care</li>
+              <li><span class="check-icon">✓</span> Lapisan Wax Premium Protection</li>
+              <li><span class="check-icon">✓</span> Engine Bay Cleaning Detail</li>
+              <li><span class="check-icon">✓</span> Advanced Odor Treatment</li>
+              <li><span class="check-icon">✓</span> Crystal Glass Cleaning</li>
+              <li><span class="check-icon">✓</span> Ultimate Tire & Body Shine</li>
+            </ul>
+            <button class="btn-select">Select Service</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+
+<h3 id="service-name-0"></h3>
+<div class="price" id="service-price-0"></div>
+<script>
+        // TARO KODENYA DI SINI
+        const selectButtons = document.querySelectorAll('.btn-select');
+
+       selectButtons.forEach((button) => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.card');
+                const serviceName = card.querySelector('h3').innerText;
+                const servicePrice = card.querySelector('.price').innerText;
+ 
+                // Simpan pilihan ke memori sementara (sessionStorage)
+                const chosenService = { name: serviceName, price: servicePrice };
+                sessionStorage.setItem('chosenCarWashService', JSON.stringify(chosenService));
+
+                // Pindah ke halaman booking
+                window.location.href = 'booking.html';
+            });
+        });
+    </script>
+    <div id="modalBayar" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+    <div style="background:white; margin:10% auto; padding:25px; border-radius:20px; width:90%; max-width:400px; text-align:center; box-shadow: 0 15px 30px rgba(0,0,0,0.3);">
+        <h3 id="judulPaket">Konfirmasi Pembayaran</h3>
+        <p id="totalHarga" style="font-size: 1.5rem; font-weight: bold; color: #2ecc71; margin: 10px 0;"></p>
+        
+        <div style="text-align: left; margin-top: 20px;">
+            <p style="font-weight: bold; margin-bottom: 10px;">Pilih Metode Pembayaran:</p>
+            
+            <label style="display: block; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 8px; cursor: pointer;">
+                <input type="radio" name="metode" value="QRIS" checked> 📱 QRIS (Gopay/Dana/OVO)
+            </label>
+            
+            <label style="display: block; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 8px; cursor: pointer;">
+                <input type="radio" name="metode" value="Transfer"> 🏦 Transfer Bank (BCA/Mandiri)
+            </label>
+            
+            <label style="display: block; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 8px; cursor: pointer;">
+                <input type="radio" name="metode" value="Tunai"> 💵 Bayar di Kasir
+            </label>
+        </div>
+
+        <button onclick="prosesKeBooking()" style="width: 100%; padding: 15px; background: #0088ff; color: white; border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; cursor: pointer;">
+            Bayar Sekarang
+        </button>
+        <p onclick="tutupModalBayar()" style="margin-top: 15px; color: red; cursor: pointer; font-size: 0.9rem;">Batal</p>
+    </div>
+</div>
+</body>
+</html>
+<div id="notifBanner" style="background: #ffcc00; padding: 10px; text-align: center; cursor: pointer;">
+    <strong id="notifText">🔔 Aktifkan Notifikasi Selesai</strong>
+    <p style="font-size: 0.7rem; margin: 0;">Klik agar tahu kapan mobilmu kinclong!</p>
+</div>
+<script>
+function bukaMetodeBayar(nama, harga) {
+    paketTerpilih = nama;
+    hargaTerpilih = harga;
+    
+    document.getElementById('judulPaket').innerText = "Bayar " + nama;
+    document.getElementById('totalHarga').innerText = "Rp " + harga.toLocaleString();
+    document.getElementById('modalBayar').style.display = "block";
+}
+
+function tutupModalBayar() {
+    document.getElementById('modalBayar').style.display = "none";
+}
+
+function prosesKeBooking() {
+    const metode = document.querySelector('input[name="metode"]:checked').value;
+    
+    // Simpan info pembayaran sementara biar bisa dibaca di halaman booking
+    localStorage.setItem('pembayaran_terakhir', JSON.stringify({
+        paket: paketTerpilih,
+        harga: hargaTerpilih,
+        metode: metode
+    }));
+
+    alert("Metode " + metode + " dipilih! Silakan lengkapi data kendaraan anda.");
+    
+    // Langsung arahkan ke halaman booking.html
+    window.location.href = "booking.html";
+}
+    const banner = document.getElementById('notifBanner');
+    const txt = document.getElementById('notifText');
+    let monitoringStatus = false;
+banner.onclick = function() {
+    Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+            const namaUser = prompt("Masukkan nama Anda saat booking untuk pantau status:");
+            
+            if (namaUser) {
+                // Ambil data dari storage untuk cek apakah nama ada
+                const data = JSON.parse(localStorage.getItem('allBookings')) || [];
+                const ditemukan = data.find(u => u.nama.toLowerCase().includes(namaUser.toLowerCase()));
+
+                if (ditemukan) {
+                    // JIKA ADA (Hujau)
+                    txt.innerHTML = "✅ Memantau Status untuk: " + namaUser;
+                    banner.style.background = "#2ecc71";
+                    banner.style.color = "white";
+                    startMonitoring(namaUser.toLowerCase());
+                } else {
+                    // JIKA TIDAK ADA (Merah)
+                    txt.innerHTML = "❌ Nama '" + namaUser + "' Tidak Terdaftar!";
+                    banner.style.background = "#e74c3c"; // Warna Merah
+                    banner.style.color = "white";
+                    
+                    // Notifikasi khusus
+                    new Notification("Data Tidak Ditemukan", {
+                        body: "Maaf, nama kamu belum ada di antrean kami. Silakan booking dulu!",
+                        icon: "https://cdn-icons-png.flaticon.com/512/564/564619.png"
+                    });
+                }
+            }
+        }
+    });
+};
+    function startMonitoring(namaTarget) {
+        if (monitoringStatus) return; // Biar gak double jalan
+        monitoringStatus = true;
+
+        let statusLama = "";
+        const suaraNotif = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+
+        setInterval(() => {
+            const data = JSON.parse(localStorage.getItem('allBookings')) || [];
+            const user = data.find(u => u.nama.toLowerCase().includes(namaTarget));
+
+            if (user) {
+                // Jika status berubah jadi Dicuci atau Selesai
+                if (statusLama !== "" && statusLama !== user.status) {
+                    // Munculkan Notifikasi Visual
+                    new Notification("CleanWheel Update! ✨", {
+                        body: `Halo ${user.nama}, status mobil kamu sekarang: ${user.status}`,
+                        icon: 'https://cdn-icons-png.flaticon.com/512/3202/3202926.png'
+                    });
+
+                    // Bunyikan Suara
+                    suaraNotif.play().catch(e => console.log("Suara terblokir browser"));
+                    
+                    // Update teks di tombol kuning
+                    txt.innerText = "📌 Status Saat Ini: " + user.status.toUpperCase();
+                }
+                statusLama = user.status;
+            }
+        }, 3000); // Cek setiap 3 detik
+    }
+</script>
+<div class="service-card">
+    
+    <button onclick="bukaMetodeBayar('Aqua Shine Detail', 100000 )" style="margin-top: 10px; background: #cc2e2e; color: white; width: 100%; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <span>💸</span> Pay Now Aqua Shine Detail
+    </button>
+    <button onclick="bukaMetodeBayar('Supreme Executive Detail', 175000 )" style="margin-top: 10px; background: #0026ff; color: white; width: 100%; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <span>💸</span> Pay Now Supreme Executive Detail
+    </button>
+    <button onclick="bukaMetodeBayar('Titanium Luxury Detail', 250000 )" style="margin-top: 10px; background: #2ecc71; color: white; width: 100%; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <span>💸</span> Pay Now Titanium Luxury Detail
+    </button>
+</div>
+<script>
+  // Letakkan variabel ini di paling atas dalam tag <script> agar bisa dibaca semua fungsi
+let paketTerpilih = "";
+let hargaTerpilih = 0;
+
+// FUNGSI 1: Untuk tombol SELECT SERVICE (Belum Bayar)
+function selectService(namaPaket, hargaPaket) {
+    const dataTemp = {
+        paket: namaPaket,
+        harga: hargaPaket,
+        statusBayar: "Belum Bayar",
+        metode: "Bayar di Tempat"
+    };
+    localStorage.setItem('temp_booking', JSON.stringify(dataTemp));
+    window.location.href = "booking.html";
+}
+
+// FUNGSI 2: Membuka Modal (PAY NOW)
+function bukaMetodeBayar(nama, harga) {
+    paketTerpilih = nama;
+    hargaTerpilih = harga;
+    
+    // Pastikan ID ini ada di HTML Modal kamu
+    document.getElementById('judulPaket').innerText = "Bayar " + nama;
+    document.getElementById('totalHarga').innerText = "Rp " + harga.toLocaleString();
+    document.getElementById('modalBayar').style.display = "block";
+}
+
+// FUNGSI 3: Konfirmasi dari Modal ke Halaman Booking
+function prosesKeBooking() {
+    const radioCek = document.querySelector('input[name="metode"]:checked');
+    
+    if (!radioCek) {
+        alert("Silakan pilih metode pembayaran!");
+        return;
+    }
+
+    const dataTemp = {
+        paket: paketTerpilih,
+        harga: hargaTerpilih,
+        statusBayar: "Sudah Bayar",
+        metode: radioCek.value
+    };
+    
+    localStorage.setItem('temp_booking', JSON.stringify(dataTemp));
+    alert("Pembayaran Berhasil! Mengalihkan ke halaman booking...");
+    window.location.href = "booking.html";
+}
+
+// FUNGSI 4: Menutup Modal
+function tutupModalBayar() {
+    document.getElementById('modalBayar').style.display = "none";
+}
+function prosesKeBooking() {
+    const radioCek = document.querySelector('input[name="metode"]:checked');
+    
+    if (!radioCek) {
+        alert("Silakan pilih metode pembayaran!");
+        return;
+    }
+
+    const metode = radioCek.value;
+    // Membuat Kode Bayar Acak (Contoh: CW-82731)
+    const kodeBayar = "CW-" + Math.floor(10000 + Math.random() * 90000);
+
+    // Tampilkan instruksi bayar sesuai metode
+    let instruksi = "";
+    if (metode.includes("QRIS")) {
+        instruksi = "Silakan Scan QRIS yang tersedia di kasir.\nKode Referensi: " + kodeBayar;
+    } else if (metode.includes("Transfer")) {
+        instruksi = "Transfer ke Rekening BCA: 12345678 a/n CleanWheel\nKode Unik: " + kodeBayar;
+    } else {
+        instruksi = "Silakan langsung ke kasir dan sebutkan nama Anda.";
+    }
+
+    // Munculkan Kode ke User
+    alert("KODE PEMBAYARAN ANDA: " + kodeBayar + "\n\n" + instruksi);
+
+    // Simpan data ke memori sementara sebelum pindah halaman
+    const dataTemp = {
+        paket: paketTerpilih,
+        harga: hargaTerpilih,
+        statusBayar: "Sudah Bayar",
+        metode: metode,
+        kode: kodeBayar // Simpan kodenya juga
+    };
+    
+    localStorage.setItem('temp_booking', JSON.stringify(dataTemp));
+    window.location.href = "booking.html";
+}
